@@ -1,33 +1,57 @@
-// exercício 1 e 2
-const PORTA = 3000;
-datareq = new Date().toISOString()
+// == EXERCÍCIOS ==
+
+// exercício 1, 2, 3 e 4
+import http from 'node:http'
+import { URL } from 'node:url'
+
+const porta = 3000
+
+const produtos = [
+    {id: 1, nome: "Sabonete"},
+    {id: 2, nome: "Volante LogiTech G923"},
+    {id: 3, nome: "Sabão em Pó"},
+    {id: 4, nome: "Pelúcia do Sonic"},
+]
 
 const server = http.createServer((req, res) => {
-    console.log(`Requisição recebida: ${req.method} ${req.url} em ${datareq}`);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-    res.end('Recurso criado\n');
-    console.log(`status atual: ${res.statusCode + 1}`)
+    res.statusCode = 200
+    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+
+    if (req.url == "/paginainicial") {
+        console.log(`requisição: ${req.url}`)
+        return res.end(JSON.stringify({data: "Página Inicial"}))
+    }
+
+    if (req.method == "GET" && req.url == "/contato") {
+        console.log(`requisição: ${req.url}`)
+        console.log(`método: ${req.method}`)
+        return res.end(JSON.stringify(
+            {data:
+            {numero_telefone: "67 99999 9999",
+            endereco: "Rua da Alegria, 99, Centro"}
+        })
+        );
+    }
+
+    if (req.method == "GET" && req.url == "/produtos") {
+        console.log(`requisição: ${req.url}`)
+        console.log(`método: ${req.method}`)
+        return res.end(JSON.stringify(produtos));
+    }
+
+
+    if (req.method == "GET" && req.url == "/status") {
+        console.log(`requisição: ${req.url}`)
+        console.log(`método: ${req.method}`)
+        return res.end(JSON.stringify({"status":"ok"}));
+    }else{
+        console.log(`requisição: ${req.url}`)
+        console.log(`método: ${req.method}`)
+        return res.end(JSON.stringify({"status": "404"}));
+    }
+    
+})
+
+server.listen(porta, () => {
+    console.log(`Servidor ouvindo na porta http://localhost:${porta}/paginainicial`)
 });
-
-server.listen(PORTA, () => {
-    console.log(`Servidor escutando em http://localhost:${PORTA}`);
-});
-
-// exercício 3
-const PORTA = 3000;
-
-const server = http.createServer((req, res) => {
-    console.log(`Requisição recebida: ${req.method} ${req.url}`);
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.end(`${JSON.stringify({ status: "ok" })}`);
-});
-
-server.listen(PORTA, () => {
-    console.log(`Servidor escutando em http://localhost:${PORTA}`);
-});
-
-// exercício 4:
-// acreditava que, ao tirar o res.end() do codigo acima iria dar alguma mensagem de erro,
-// mas fui surpreendido em ver que restava apenas uma página em branco no servidor.
